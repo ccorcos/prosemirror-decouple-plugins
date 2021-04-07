@@ -1,31 +1,34 @@
-import * as React from "react"
+import React, { useLayoutEffect, useRef } from "react"
+import { EditorState } from "prosemirror-state"
+import { EditorView } from "prosemirror-view"
+import { Schema, DOMParser } from "prosemirror-model"
+import { schema } from "prosemirror-schema-basic"
+import { addListNodes } from "prosemirror-schema-list"
+import { exampleSetup } from "prosemirror-example-setup"
+
+// Mix the nodes from prosemirror-schema-list into the basic schema to
+// create a schema with list support.
+const mySchema = new Schema({
+	nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
+	marks: schema.spec.marks,
+})
 
 export function App() {
-	const [{ x, y }, setMouse] = React.useState({ x: 0, y: 0 })
-	React.useEffect(() => {
-		const handleMouseMove = (event) => {
-			setMouse({ x: event.clientX, y: event.clientY })
-		}
-		window.addEventListener("mousemove", handleMouseMove)
-		return () => {
-			window.removeEventListener("mousemove", handleMouseMove)
-		}
-	})
-
+	const ref = useRef<HTMLDivElement | null>(null)
+	useLayoutEffect(() => {
+		const view = new EditorView(ref.current!, {
+			state: EditorState.create({
+				doc: mySchema.nodeFromJSON({
+					type: "doc",
+					content: [{ type: "paragraph", content: [] }],
+				}),
+				plugins: exampleSetup({ schema: mySchema }),
+			}),
+		})
+	}, [])
 	return (
-		<div>
-			<div
-				style={{
-					position: "fixed",
-					top: 0,
-					left: 0,
-					width: x,
-					height: y,
-					background: "cyan",
-					opacity: 0.2,
-				}}
-			/>
-			<h1>Hello World</h1>
+		<div id="editor" ref={ref}>
+			hello
 		</div>
 	)
 }
