@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin"
 import { Configuration } from "webpack"
 
 const config: Configuration = {
+	mode: "development",
 	entry: "./src/index.tsx",
 	resolve: {
 		extensions: [".js", ".ts", ".tsx"],
