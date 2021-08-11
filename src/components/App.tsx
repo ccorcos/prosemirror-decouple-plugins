@@ -448,3 +448,10 @@ const EditorStateMachine: StateMachine<
 	update: (state, action) => state.apply(action),
 	save: (state) => state.toJSON(),
 }
+
+const changeTabPlugin = (dispatch: (arg: TabbedEditorsAction) => void) => {
+	return keymap({
+		"mod-[": () => dispatch({ type: "change-tab", direction: -1 }),
+		"mod-]": () => dispatch({ type: "change-tab", direction: +1 }),
+	})
+}
