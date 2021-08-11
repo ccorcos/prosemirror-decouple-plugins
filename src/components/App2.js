@@ -126,6 +126,15 @@ class AppView {
 	}
 }
 
+// How to do this?
+// We can add to EditorView handleKeyDown prop to solve this accute problem,
+// but what about a plugin that requires app in the view().
+const counterPlugin = (app) => {
+	return keymap({
+		"mod-]": () => app.dispatch({ type: "increment" }),
+	})
+}
+
 export function startup() {
 	const counterDiv = document.createElement("div")
 	document.body.appendChild(counterDiv)
