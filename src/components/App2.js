@@ -135,6 +135,24 @@ const counterPlugin = (app) => {
 	})
 }
 
+const buttonPlugin = (app) => {
+	return new Plugin({
+		view(view) {
+			const button = document.createElement("button	")
+			document.body.appendChild(button)
+			button.addEventListener("click", () =>
+				app.dispatch({ type: "increment" })
+			)
+			return {
+				update: () => {},
+				destroy: () => {
+					document.body.removeChild(button)
+				},
+			}
+		},
+	})
+}
+
 export function startup() {
 	const counterDiv = document.createElement("div")
 	document.body.appendChild(counterDiv)
