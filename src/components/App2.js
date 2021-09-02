@@ -1,5 +1,5 @@
 import { Schema } from "prosemirror-model"
-import { EditorState } from "prosemirror-state"
+import { EditorState, Plugin } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { keymap } from "prosemirror-keymap"
 import { toggleMark } from "prosemirror-commands"
@@ -74,6 +74,7 @@ const prosemirrorEffect = (renderNode) => ({
 	init(app) {
 		const view = new EditorView(renderNode, {
 			state: app.state.editorState,
+			plugins: [counterPlugin(app), buttonPlugin(app)],
 			dispatchTransaction(tr) {
 				app.dispatch({ type: "edit-prosemirror", tr })
 			},
@@ -126,9 +127,6 @@ class AppView {
 	}
 }
 
-// How to do this?
-// We can add to EditorView handleKeyDown prop to solve this accute problem,
-// but what about a plugin that requires app in the view().
 const counterPlugin = (app) => {
 	return keymap({
 		"mod-]": () => app.dispatch({ type: "increment" }),
@@ -138,7 +136,8 @@ const counterPlugin = (app) => {
 const buttonPlugin = (app) => {
 	return new Plugin({
 		view(view) {
-			const button = document.createElement("button	")
+			const button = document.createElement("button")
+			button.innerText = "increment"
 			document.body.appendChild(button)
 			button.addEventListener("click", () =>
 				app.dispatch({ type: "increment" })
